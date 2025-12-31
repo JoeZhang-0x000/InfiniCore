@@ -15,6 +15,21 @@ struct InfinicclComm;
 
 typedef struct InfinicclComm *infinicclComm_t;
 
+struct InfinicclUniqueId {
+    char data[128];
+};
+
+__C __export infiniStatus_t infinicclGetUniqueId(
+    infiniDevice_t device_type,
+    InfinicclUniqueId *id);
+
+__C __export infiniStatus_t infinicclCommInitRank(
+    infiniDevice_t device_type,
+    infinicclComm_t *comm,
+    int nranks,
+    InfinicclUniqueId uniqueId,
+    int rank);
+
 __C __export infiniStatus_t infinicclCommInitAll(
     infiniDevice_t device_type,
     infinicclComm_t *comms,

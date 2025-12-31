@@ -54,6 +54,28 @@ inline ncclComm_t getNcclComm(infinicclComm_t comm) {
 
 namespace infiniccl::cuda {
 
+infiniStatus_t getUniqueId(InfinicclUniqueId *id) {
+    CHECK_NCCL(ncclGetUniqueId(reinterpret_cast<ncclUniqueId *>(id->data)));
+    return INFINI_STATUS_SUCCESS;
+}
+
+infiniStatus_t commInitRank(
+    infinicclComm_t *comm,
+    int nranks,
+    InfinicclUniqueId uniqueId,
+    int rank) {
+    ncclComm_t nccl_comm;
+    CHECK_NCCL(
+        ncclCommInitRank(
+            &nccl_comm,
+            nranks,
+            *(reinterpret_cast<ncclUniqueId *>(uniqueId.data)),
+            rank));
+    *comm = new InfinicclComm{INFINI_DEVICE_NVIDIA, rank, (void *)(nccl_comm)};
+
+    return INFINI_STATUS_SUCCESS;
+}
+
 infiniStatus_t commInitAll(
     infinicclComm_t *comms,
     int ndevice,

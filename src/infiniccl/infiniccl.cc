@@ -7,6 +7,30 @@
 #include "./metax/infiniccl_metax.h"
 #include "./moore/infiniccl_moore.h"
 
+__C infiniStatus_t infinicclGetUniqueId(
+    infiniDevice_t device_type,
+    InfinicclUniqueId *id) {
+#define GET_UNIQUE_ID(CASE_, NAMESPACE_) \
+    case CASE_:                          \
+        return infiniccl::NAMESPACE_::getUniqueId(id)
+    switch (device_type) {
+        GET_UNIQUE_ID(INFINI_DEVICE_NVIDIA, cuda);
+    default:
+        return INFINI_STATUS_DEVICE_TYPE_NOT_SUPPORTED;
+    }
+}
+
+__C infiniStatus_t infinicclCommInitRank(infiniDevice_t device_type, infinicclComm_t *comm, int nranks, InfinicclUniqueId uniqueId, int rank) {
+#define COMM_INIT_RANK(CASE_, NAMESPACE_) \
+    case CASE_:                           \
+        return infiniccl::NAMESPACE_::commInitRank(comm, nranks, uniqueId, rank);
+    switch (device_type) {
+        COMM_INIT_RANK(INFINI_DEVICE_NVIDIA, cuda);
+    default:
+        return INFINI_STATUS_DEVICE_TYPE_NOT_SUPPORTED;
+    }
+}
+
 __C infiniStatus_t infinicclCommInitAll(
     infiniDevice_t device_type,
     infinicclComm_t *comms,

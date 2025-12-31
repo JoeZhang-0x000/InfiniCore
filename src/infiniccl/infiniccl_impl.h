@@ -9,23 +9,28 @@ struct InfinicclComm {
     void *comm;    // the actual communicator
 };
 
-#define INFINICCL_DEVICE_API(NAMSPACE, IMPL)               \
-    namespace infiniccl::NAMSPACE {                        \
-    infiniStatus_t commInitAll(                            \
-        infinicclComm_t *comms,                            \
-        int ndevice,                                       \
-        const int *device_ids) IMPL;                       \
-                                                           \
-    infiniStatus_t commDestroy(infinicclComm_t comm) IMPL; \
-                                                           \
-    infiniStatus_t allReduce(                              \
-        void *sendbuf,                                     \
-        void *recvbuf,                                     \
-        size_t count,                                      \
-        infiniDtype_t datatype,                            \
-        infinicclReduceOp_t op,                            \
-        infinicclComm_t comm,                              \
-        infinirtStream_t stream) IMPL;                     \
+#define INFINICCL_DEVICE_API(NAMSPACE, IMPL)                                            \
+    namespace infiniccl::NAMSPACE {                                                     \
+    infiniStatus_t commInitAll(                                                         \
+        infinicclComm_t *comms,                                                         \
+        int ndevice,                                                                    \
+        const int *device_ids) IMPL;                                                    \
+                                                                                        \
+    infiniStatus_t commDestroy(infinicclComm_t comm) IMPL;                              \
+                                                                                        \
+    infiniStatus_t allReduce(                                                           \
+        void *sendbuf,                                                                  \
+        void *recvbuf,                                                                  \
+        size_t count,                                                                   \
+        infiniDtype_t datatype,                                                         \
+        infinicclReduceOp_t op,                                                         \
+        infinicclComm_t comm,                                                           \
+        infinirtStream_t stream) IMPL;                                                  \
+                                                                                        \
+    infiniStatus_t getUniqueId(InfinicclUniqueId *id) IMPL;                             \
+                                                                                        \
+    infiniStatus_t commInitRank(infinicclComm_t *comm,                                  \
+                                int nranks, InfinicclUniqueId uniqueId, int rank) IMPL; \
     };
 
 #define INFINICCL_DEVICE_API_IMPL(NAMSPACE) \
