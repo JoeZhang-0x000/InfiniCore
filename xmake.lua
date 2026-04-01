@@ -13,6 +13,20 @@ add_includedirs("include")
 add_includedirs("third_party/spdlog/include")
 add_includedirs("third_party/nlohmann_json/single_include/")
 
+option("werror")
+    set_default(os.getenv("INFINICORE_WERROR") ~= "0")
+    set_showmenu(true)
+    set_description("Treat warnings as errors")
+option_end()
+
+function set_project_warnings()
+    if has_config("werror") then
+        set_warnings("all", "error")
+    else
+        set_warnings("all")
+    end
+end
+
 if is_mode("debug") then
     add_defines("DEBUG_MODE")
 end
@@ -274,7 +288,7 @@ target("infini-utils")
     on_install(function (target) end)
     set_languages("cxx17")
 
-    set_warnings("all", "error")
+    set_project_warnings()
 
     if is_plat("windows") then
         add_cxxflags("/wd4068")

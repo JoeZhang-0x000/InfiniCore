@@ -22,7 +22,10 @@ rule("mlu")
         local cc = "cncc"
 
         local includedirs = table.concat(target:get("includedirs"), " ")
-        local args = {"-c", sourcefile, "-o", objectfile, "--bang-mlu-arch=mtp_592", "-O3", "-fPIC", "-Wall", "-Werror", "-std=c++17", "-pthread"}
+        local args = {"-c", sourcefile, "-o", objectfile, "--bang-mlu-arch=mtp_592", "-O3", "-fPIC", "-Wall", "-std=c++17", "-pthread"}
+        if has_config("werror") then
+            table.insert(args, "-Werror")
+        end
 
         for _, includedir in ipairs(target:get("includedirs")) do
             table.insert(args, "-I" .. includedir)
@@ -42,7 +45,7 @@ target("infiniop-cambricon")
 
     add_cxflags("-lstdc++ -fPIC")
     add_cxxflags("-lstdc++ -fPIC")
-    set_warnings("all", "error")
+    set_project_warnings()
 
     set_languages("cxx17")
     add_files(src_dir.."/devices/bang/*.cc", src_dir.."/ops/*/bang/*.cc")
@@ -59,15 +62,19 @@ target("infinirt-cambricon")
     on_install(function (target) end)
     -- Add include dirs
     add_files("../src/infinirt/bang/*.cc")
-    add_cxflags("-lstdc++ -Wall -Werror -fPIC")
-    add_cxxflags("-lstdc++ -Wall -Werror -fPIC")
+    add_cxflags("-lstdc++ -Wall -fPIC")
+    add_cxxflags("-lstdc++ -Wall -fPIC")
+    if has_config("werror") then
+        add_cxflags("-Werror")
+        add_cxxflags("-Werror")
+    end
 target_end()
 
 target("infiniccl-cambricon")
     set_kind("static")
     add_deps("infinirt")
     add_deps("infini-utils")
-    set_warnings("all", "error")
+    set_project_warnings()
     set_languages("cxx17")
     on_install(function (target) end)
     

@@ -3,7 +3,7 @@ target("infiniop-cpu")
     add_deps("infini-utils")
     on_install(function (target) end)
 
-    set_warnings("all", "error")
+    set_project_warnings()
 
     if is_plat("windows") then
         add_cxxflags("/wd4068")
@@ -29,7 +29,7 @@ target("infinirt-cpu")
     add_deps("infini-utils")
     on_install(function (target) end)
 
-    set_warnings("all", "error")
+    set_project_warnings()
 
     if not is_plat("windows") then
         add_cxflags("-fPIC")
