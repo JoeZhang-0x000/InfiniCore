@@ -48,7 +48,8 @@ mha_varlen_fwd(at::Tensor &q,                               // total_q x num_hea
 #if defined(ENABLE_METAX_API) && defined(INFINICORE_HPCC_VERSION_MAJOR) && (INFINICORE_HPCC_VERSION_MAJOR >= 3)
                // MetaX/Mars `flash_attn_2_cuda` (e.g. 2.6.x+mars) appends this argument vs upstream Dao-AILab flash-attn.
                ,
-               std::optional<at::Tensor> &flash_attn_mars_ext_
+               std::optional<at::Tensor> &flash_attn_mars_ext_,
+               bool flash_attn_mars_use_ext_
 #endif
     );
 

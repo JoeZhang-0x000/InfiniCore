@@ -171,6 +171,8 @@ if has_config("metax-gpu") then
         add_defines("ENABLE_METAX_MC_API")
         -- MACA torch build expects USE_MACA for ATen headers (e.g. C10_WARP_SIZE).
         add_defines("USE_MACA")
+        -- MACA 3.x flash_attn_2_cuda has the Mars ABI extension.
+        add_defines("INFINICORE_HPCC_VERSION_MAJOR=3")
     else
         -- HPCC torch build expects this for ATen headers on hpcc.
         add_defines("USE_HPCC")
@@ -520,6 +522,25 @@ target("infinicore_cpp_api")
                 path.join(TORCH_DIR, "include"), 
                 path.join(TORCH_DIR, "include/torch/csrc/api/include"),
                 { public = true })
+
+            if has_config("metax-gpu") then
+                local maca_root = os.getenv("MACA_PATH") or os.getenv("MACA_HOME") or os.getenv("MACA_ROOT")
+                if maca_root and maca_root ~= "" then
+                    target:add(
+                        "includedirs",
+                        path.join(maca_root, "tools/cu-bridge/include"),
+                        path.join(maca_root, "include"),
+                        path.join(maca_root, "include/common"),
+                        path.join(maca_root, "include/mcr"),
+                        path.join(maca_root, "include/mcblas"),
+                        path.join(maca_root, "include/mcdnn"),
+                        path.join(maca_root, "include/mcfft"),
+                        path.join(maca_root, "include/mcrand"),
+                        path.join(maca_root, "include/mcsolver"),
+                        path.join(maca_root, "include/mcsparse"),
+                        { public = true })
+                end
+            end
             
             target:add(
                 "linkdirs",
